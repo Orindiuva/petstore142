@@ -9,7 +9,7 @@ public class TestPet {
     
     static String ct = "application/json"; //content-type
     static String uriUser = "https://petstore.swagger.io/v2/pet";
-
+    static int petId = 173998;
 
     public static String lerArquivoJson(String arquivoJson) throws IOException{                 
          return new String(Files.readAllBytes(Paths.get(arquivoJson)));
@@ -19,9 +19,7 @@ public class TestPet {
     public void testPostPet() throws IOException{
         //carregar os dados do arquivo JSON do pet
         String jsonBody = lerArquivoJson("src/test/resources/json/pet1.json");
-        boolean tst = jsonBody == null; 
-        System.out.println("boolean: " + tst);
-        int petId = 173998;
+        
         given().
             contentType(ct).
             log().all().                                         //mostra tudo na ida
@@ -35,5 +33,23 @@ public class TestPet {
             .body("id", is(petId))
             .body("category.name", is("cachorro"))
             .body("tags[0].name", is("vacinado"));        
+    }
+
+    @Test
+    public void testGetPet(){        
+        given().
+            contentType(ct).
+            log().all()                                         //mostra tudo na ida            
+        .when()
+            .get(uriUser + "/" + petId)
+        .then()
+            .statusCode(200)
+            .body("name", is("snoopy"))
+            .body("id", is(petId))
+            .body("category.name", is("cachorro"))
+            .body("tags[0].name", is("vacinado"));        
+
+        
+
     }
 }
